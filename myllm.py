@@ -46,3 +46,14 @@ class LearnAgent:
             return None
 
 # 什么是流式响应? 
+    # 传入注册表，让agent寻找
+    def invoke_with_tools(self,messages, tools, tool_choice = "auto"):
+        response = self.client.chat.completions.create(
+            model = self.model,
+            messages = messages,
+            tools = tools,
+            tool_choice = tool_choice,
+            stream = False,
+        )
+
+        return response.choices[0].message
