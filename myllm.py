@@ -38,8 +38,9 @@ class LearnAgent:
             for each in response:
                 if not each.choices:
                     continue
-                content = each.choices[0].delta.content or ""
-                collected_content.append(content)
+                content = each.choices[0].delta.content
+                if content is not None:
+                    collected_content.append(content)
             return "".join(collected_content)
         except Exception as e:
             print("大模型思考失败", e)

@@ -1,5 +1,8 @@
 from myllm import LearnAgent
-from agent import Agent
+from agents.simpleagent import SimpleAgent
+from agents.reactagent import ReactAgent
+from agents.plan_solve import PlanAndSolve
+from agents.reflectagent import ReflectAgent
 from config import Config
 
 if __name__ == "__main__":
@@ -10,8 +13,8 @@ if __name__ == "__main__":
             api_key = config.model_api_key.get_secret_value(),
             base_url = config.base_url,
         )
-        agent = Agent(llmclient)
-        result = agent.run("gpt是什么，使用搜索工具")
+        agent = ReflectAgent(llmclient)
+        result = agent.run("你认为人生的意义是什么")
         if result:
             print("模型完成响应")
             print(result)
