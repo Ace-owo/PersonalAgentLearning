@@ -11,9 +11,18 @@ from agents.baseagent import BaseAgent
 
 class ReactAgent(BaseAgent):
 
-    def run(self, user_input : str, max_tool_rounds : int = 3) -> str | None:
+    def run(
+        self,
+        user_input : str,
+        max_tool_rounds : int = 3,
+        history : list[Messages] | None = None,
+    ) -> str | None:
 
         messages : list[Messages] = self._build_initial_messages(user_input)
+
+        # 如果有短期历史，插在 system 之后、当前 user 之前
+        if history:
+            messages = [messages[0]] + history + [messages[1]]
 
         for round_index in range(max_tool_rounds):
             reply = self.llm.invoke_with_tools(
@@ -27,7 +36,7 @@ class ReactAgent(BaseAgent):
 
             messages = self._handle_tool_calls(reply, messages)
 
-        # 达到工具上线后 基于已有结果生成最终回答
+        # 达到工具上限后，基于已有结果生成最终回答
         final_reply = self.llm.invoke_with_tools(
             [message.to_api_dict() for message in messages],
             TOOL_DEFINITION,
